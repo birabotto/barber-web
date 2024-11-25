@@ -1,25 +1,23 @@
-import { useContext, useState } from "react";
 import { Center, Flex, Text, Input, Button } from "@chakra-ui/react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import logoImg from "../../../public/images/logo.svg";
 import Head from "next/head";
 
-import { AuthContext } from "@/context/AuthContext";
-
-export default function Login() {
-  const { singIn } = useContext(AuthContext);
-
-  const [email, setEmail] = useState("");
+export default function Register() {
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
-  async function handleLogin() {
-    await singIn({ email, password });
+  function handleRegister() {
+    alert(name);
   }
+
   return (
     <>
       <Head>
-        <title>BarberPRO - Login</title>
+        <title>BarberPRO - Register</title>
       </Head>
       <Flex
         background="barber.900"
@@ -40,20 +38,31 @@ export default function Login() {
             background="barber.400"
             variant="filled"
             size="lg"
-            placeholder="email@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
+            placeholder="Name of Barber"
+            type="name"
+            onChange={(e) => setName(e.target.value)}
+            value={name}
             mb={3}
           />
           <Input
             background="barber.400"
             variant="filled"
             size="lg"
+            placeholder="email@email.com"
+            type="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            mb={6}
+          />
+
+          <Input
+            background="barber.400"
+            variant="filled"
+            size="lg"
             placeholder="*******"
             type="password"
-            value={password}
             onChange={(e) => setPassword(e.target.value)}
+            value={password}
             mb={6}
           />
 
@@ -63,14 +72,14 @@ export default function Login() {
             color="gray.900"
             size="lg"
             _hover={{ bg: "#ffb13e" }}
-            onClick={handleLogin}
+            onClick={handleRegister}
           >
-            Login
+            Create
           </Button>
           <Center mt={2}>
-            <Link href="/register">
+            <Link href="/login">
               <Text cursor="pointer">
-                Dont have an account? <strong>Create one!</strong>
+                Have an account? <strong>Click here!</strong>
               </Text>
             </Link>
           </Center>
