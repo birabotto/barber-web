@@ -6,6 +6,7 @@ import logoImg from "../../../public/images/logo.svg";
 import Head from "next/head";
 
 import { AuthContext } from "@/context/AuthContext";
+import { canSSRGuest } from "@/utils/canSSRGuest";
 
 export default function Login() {
   const { singIn } = useContext(AuthContext);
@@ -14,6 +15,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
+    if (email == "" || password == "") return;
+
     await singIn({ email, password });
   }
   return (
@@ -79,3 +82,9 @@ export default function Login() {
     </>
   );
 }
+
+export const getServerSideProps = canSSRGuest(async () => {
+  return {
+    props: {},
+  };
+});
