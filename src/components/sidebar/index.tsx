@@ -46,7 +46,7 @@ export function SideBar({ children }: { children: ReactNode }) {
         placement="left"
         returnFocusOnClose={false}
         onOverlayClick={onOpen}
-        size="ful"
+        size="full"
         onClose={onClose}
       >
         <DrawerContent>
@@ -54,7 +54,7 @@ export function SideBar({ children }: { children: ReactNode }) {
         </DrawerContent>
       </Drawer>
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 600 }} p={4}>
+      <Box ml={{ base: 0, md: 60 }} p={4}>
         {children}
       </Box>
     </Box>
