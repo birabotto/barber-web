@@ -72,6 +72,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           });
         })
         .catch((err) => {
+          console.log(err);
           signOut();
         });
     }
@@ -83,9 +84,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email,
         password,
       });
-
       const { id, name, token, subscriptions, address } = response.data;
-      setCookie(undefined, "@baber.token", token, {
+      setCookie(undefined, "@barber.token", token, {
         maxAge: 60 * 60 * 24 * 30,
         path: "/",
       });
