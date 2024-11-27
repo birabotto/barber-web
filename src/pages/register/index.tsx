@@ -52,6 +52,7 @@ export default function Register() {
             size="lg"
             placeholder="Name of Barber"
             type="name"
+            color="white"
             onChange={(e) => setName(e.target.value)}
             value={name}
             mb={3}
@@ -62,6 +63,7 @@ export default function Register() {
             size="lg"
             placeholder="email@email.com"
             type="email"
+            color="white"
             onChange={(e) => setEmail(e.target.value)}
             value={email}
             mb={6}
@@ -73,6 +75,7 @@ export default function Register() {
             size="lg"
             placeholder="*******"
             type="password"
+            color="white"
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             mb={6}

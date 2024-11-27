@@ -5,8 +5,25 @@ import { SideBar } from "@/components/sidebar";
 import { canSSRAuth } from "@/utils/canSSRAuth";
 import Link from "next/link";
 import { AuthContext } from "@/context/AuthContext";
-import { useContext } from "react";
-export default function Profile() {
+import { useContext, useEffect, useState } from "react";
+import { setupAPIClient } from "@/services/api";
+
+interface UserProps {
+  id: string;
+  name: string;
+  email: string;
+  address: string | null;
+}
+
+interface ProfileProps {
+  user: UserProps;
+  premium: boolean;
+}
+
+export default function Profile({ user, premium }: ProfileProps) {
+  const [name, setName] = useState(user && user?.name);
+  const [address, setAddress] = useState(user && user?.address);
+
   const { logoutUser } = useContext(AuthContext);
   async function handleLogout() {
     await logoutUser();
@@ -54,6 +71,9 @@ export default function Profile() {
                 size="lg"
                 type="text"
                 mb={3}
+                color="white"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
               <Text mb={2} fontSize="xl" fontWeight="bold" color="white">
                 Address of Barber
@@ -64,7 +84,10 @@ export default function Profile() {
                 placeholder="Address of your barber"
                 size="lg"
                 type="text"
+                color="white"
                 mb={3}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
 
               <Text mb={2} fontSize="xl" fontWeight="bold" color="white">
@@ -81,8 +104,13 @@ export default function Profile() {
                 alignItems="center"
                 justifyContent="space-between"
               >
-                <Text color="#44ffb4" p={2} fontSize="lg">
-                  Free plan
+                <Text
+                  color={premium ? "#FBA931" : "#44ffb4"}
+                  p={2}
+                  fontSize="lg"
+                >
+                  {}
+                  {premium ? "Premium" : "Free"} plan
                 </Text>
                 <Link href="/plans">
                   <Box
@@ -129,8 +157,32 @@ export default function Profile() {
   );
 }
 
-export const getServerSideProps = canSSRAuth(async () => {
-  return {
-    props: {},
-  };
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  try {
+    const apiClient = setupAPIClient(ctx);
+    const response = await apiClient.get("/me");
+    console.log(response.data?.subscriptions?.status);
+    const user = {
+      id: response.data.id,
+      name: response.data.name,
+      email: response.data.email,
+      address: response.data?.address,
+    };
+
+    return {
+      props: {
+        user,
+        premium:
+          response.data?.subscriptions?.status === "active" ? true : false,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  }
 });

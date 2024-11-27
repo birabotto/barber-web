@@ -43,6 +43,7 @@ export default function Login() {
             background="barber.400"
             variant="filled"
             size="lg"
+            color="white"
             placeholder="email@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -54,6 +55,7 @@ export default function Login() {
             variant="filled"
             size="lg"
             placeholder="*******"
+            color="white"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
