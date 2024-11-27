@@ -1,8 +1,17 @@
 import { Flex, Text, Heading, Box, Input, Button } from "@chakra-ui/react";
+
 import Head from "next/head";
 import { SideBar } from "@/components/sidebar";
+import { canSSRAuth } from "@/utils/canSSRAuth";
 import Link from "next/link";
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 export default function Profile() {
+  const { logoutUser } = useContext(AuthContext);
+  async function handleLogout() {
+    await logoutUser();
+  }
+
   return (
     <>
       <Head>
@@ -108,8 +117,9 @@ export default function Profile() {
                 color="red.500"
                 size="lg"
                 _hover={{ bg: "transparent" }}
+                onClick={handleLogout}
               >
-                Leave of perfil
+                Logout
               </Button>
             </Flex>
           </Flex>
@@ -118,3 +128,9 @@ export default function Profile() {
     </>
   );
 }
+
+export const getServerSideProps = canSSRAuth(async () => {
+  return {
+    props: {},
+  };
+});

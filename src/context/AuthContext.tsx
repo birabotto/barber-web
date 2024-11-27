@@ -9,7 +9,7 @@ interface AuthContextData {
   isAuthenticated: boolean;
   singIn: (credentials: SignInProps) => Promise<void>;
   signUp: (credentials: SignUpProps) => Promise<void>;
-  logoutUser: (credentials: SignUpProps) => Promise<void>;
+  logoutUser: (credentials?: SignUpProps) => Promise<void>;
 }
 
 interface UserProps {
