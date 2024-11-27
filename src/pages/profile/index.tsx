@@ -29,6 +29,21 @@ export default function Profile({ user, premium }: ProfileProps) {
     await logoutUser();
   }
 
+  async function handleUpdateUser() {
+    if (name === "") return;
+
+    try {
+      const apiClient = setupAPIClient();
+      await apiClient.put("/users", {
+        name,
+        address,
+      });
+      alert("User was updated");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -133,6 +148,7 @@ export default function Profile({ user, premium }: ProfileProps) {
                 mb={4}
                 bg="button.cta"
                 _hover={{ bg: "#ffb13e" }}
+                onClick={handleUpdateUser}
               >
                 Save
               </Button>
@@ -161,7 +177,7 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
   try {
     const apiClient = setupAPIClient(ctx);
     const response = await apiClient.get("/me");
-    console.log(response.data?.subscriptions?.status);
+
     const user = {
       id: response.data.id,
       name: response.data.name,
