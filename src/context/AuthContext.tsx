@@ -3,12 +3,13 @@ import Router from "next/router";
 import { destroyCookie, setCookie } from "nookies";
 
 import { api } from "@/services/apiClient";
-import path from "path";
 
 interface AuthContextData {
   user: UserProps;
   isAuthenticated: boolean;
   singIn: (credentials: SignInProps) => Promise<void>;
+  signUp: (credentials: SignUpProps) => Promise<void>;
+  logoutUser: (credentials: SignUpProps) => Promise<void>;
 }
 
 interface UserProps {
@@ -29,6 +30,12 @@ type AuthProviderProps = {
 };
 
 interface SignInProps {
+  email: string;
+  password: string;
+}
+
+interface SignUpProps {
+  name: string;
   email: string;
   password: string;
 }
@@ -76,8 +83,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
+  async function signUp({ name, email, password }: SignUpProps) {
+    try {
+      const response = await api.post("/users", {
+        name,
+        email,
+        password,
+      });
+      Router.push("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function logoutUser() {
+    try {
+      destroyCookie(null, "@barber.token", { path: "/" });
+      setUser(null);
+      Router.push("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, singIn }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, singIn, signUp, logoutUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
