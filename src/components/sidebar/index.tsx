@@ -26,7 +26,7 @@ interface LinkItemProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Calendar", icon: FiScissors, route: "/dashboarsd" },
+  { name: "Calendar", icon: FiScissors, route: "/dashboard" },
   { name: "Haircuts", icon: FiClipboard, route: "/haircuts" },
   { name: "My Profile", icon: FiSettings, route: "/profile" },
 ];
