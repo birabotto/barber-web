@@ -97,7 +97,12 @@ const SideBarContent = ({ onClose, ...rest }: SidebarProps) => {
             </Text>
           </Flex>
         </Link>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
+        <CloseButton
+          display={{ base: "flex", md: "none" }}
+          onClick={onClose}
+          bg="barber.400"
+          color="white"
+        />
       </Flex>
 
       {LinkItems.map((link) => (
@@ -127,7 +132,7 @@ const NavItem = ({ icon, children, route, ...rest }: NavItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "barber.900",
+          bg: "barber.400",
           color: "white",
         }}
         {...rest}
@@ -166,10 +171,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       {...rest}
     >
       <IconButton
+        color="white"
         variant="outline"
         onClick={onOpen}
         aria-label="open menu"
         icon={<FiMenu />}
+        _hover={{
+          bg: "barber.100",
+          color: "white",
+        }}
       />
       <Flex flexDirection="row">
         <Text
