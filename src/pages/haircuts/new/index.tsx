@@ -9,9 +9,10 @@ import {
   Text,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { redirect } from "next/dist/server/api-utils";
 import Head from "next/head";
 import Link from "next/link";
+import Router from "next/router";
+import { useState } from "react";
 import { FiChevronLeft } from "react-icons/fi";
 
 interface NewHaircutProps {
@@ -21,6 +22,26 @@ interface NewHaircutProps {
 
 export default function NewHaircut({ subscriptions, count }: NewHaircutProps) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  console.log(`>>>> ${count}`);
+  async function handleNew() {
+    if (name === "" || price === "") return;
+
+    try {
+      const apiClient = setupAPIClient();
+      await apiClient.post("/haircuts", {
+        name,
+        price: Number(price),
+      });
+
+      Router.push("/haircuts");
+    } catch (error) {
+      console.error(error);
+      alert("ERROR New Haircut");
+    }
+  }
+
   return (
     <>
       <Head>
@@ -75,7 +96,10 @@ export default function NewHaircut({ subscriptions, count }: NewHaircutProps) {
               w="85%"
               bg="gray.900"
               mb={3}
-              disabled={!subscriptions && count >= 3}
+              color="white"
+              disabled={!subscriptions || count >= 3}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
 
             <Input
@@ -85,7 +109,10 @@ export default function NewHaircut({ subscriptions, count }: NewHaircutProps) {
               w="85%"
               bg="gray.900"
               mb={4}
-              disabled={!subscriptions && count >= 3}
+              color="white"
+              disabled={!subscriptions || count >= 3}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             />
 
             <Button
@@ -95,26 +122,30 @@ export default function NewHaircut({ subscriptions, count }: NewHaircutProps) {
               mb={6}
               bg="button.cta"
               _hover={{ bg: "#FFb13c" }}
-              disabled={!subscriptions && count >= 3}
+              disabled={!subscriptions || count >= 3}
+              onClick={handleNew}
             >
               New
             </Button>
 
-            {!subscriptions && count >= 3 && (
-              <Flex direction="row" align="center" justifyContent="center">
-                <Text color="white">You have reached your haircute limit</Text>
-                <Link href="/plans">
-                  <Text
-                    color="#31FB6A"
-                    fontWeight="bold"
-                    cursor="pointer"
-                    ml={1}
-                  >
-                    Get premium
+            {!subscriptions ||
+              (count >= 3 && (
+                <Flex direction="row" align="center" justifyContent="center">
+                  <Text color="white">
+                    You have reached your haircute limit
                   </Text>
-                </Link>
-              </Flex>
-            )}
+                  <Link href="/plans">
+                    <Text
+                      color="#31FB6A"
+                      fontWeight="bold"
+                      cursor="pointer"
+                      ml={1}
+                    >
+                      Get premium
+                    </Text>
+                  </Link>
+                </Flex>
+              ))}
           </Flex>
         </Flex>
       </SideBar>
@@ -127,7 +158,7 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupAPIClient(ctx);
 
     const response = await apiClient.get("/haircut/check");
-    const count = await apiClient.get("/haircute/count");
+    const count = await apiClient.get("/haircut/count");
 
     return {
       props: {
