@@ -30,7 +30,7 @@ export default function Dashboard() {
             <Heading color="white" fontSize="3xl" mt={4} mb={4} mr={4}>
               Calendar
             </Heading>
-            <Link href="/new">
+            <Link href="/calendar/new">
               <Button color="white" bg="barber.400">
                 New
               </Button>
