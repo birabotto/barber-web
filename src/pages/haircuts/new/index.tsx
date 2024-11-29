@@ -24,7 +24,7 @@ export default function NewHaircut({ subscriptions, count }: NewHaircutProps) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  console.log(`>>>> ${count}`);
+
   async function handleNew() {
     if (name === "" || price === "") return;
 
