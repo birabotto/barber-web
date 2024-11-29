@@ -11,9 +11,31 @@ import { canSSRAuth } from "@/utils/canSSRAuth";
 import { SideBar } from "@/components/sidebar";
 import Link from "next/link";
 import { IoMdPerson } from "react-icons/io";
+import { setupAPIClient } from "@/services/api";
+import { useState } from "react";
 
-export default function Dashboard() {
+interface ScheduleItem {
+  map(
+    arg0: (item: any) => import("react").JSX.Element
+  ): import("react").ReactNode;
+  id: string;
+  customer: string;
+  haircut: {
+    id: string;
+    name: string;
+    price: number | number;
+    status: boolean;
+    user_id: string;
+  };
+}
+
+interface DashboardProps {
+  schedule: ScheduleItem;
+}
+
+export default function Dashboard({ schedule }: DashboardProps) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const [list, setList] = useState(schedule);
   return (
     <>
       <Head>
@@ -36,46 +58,64 @@ export default function Dashboard() {
               </Button>
             </Link>
           </Flex>
-          <ChakraLink
-            w="100%"
-            m={0}
-            p={0}
-            mt={1}
-            bg="transparent"
-            style={{ textDecoration: "none" }}
-          >
-            <Flex
+
+          {list.map((item) => (
+            <ChakraLink
+              key={item?.id}
               w="100%"
-              p={4}
-              rounded={4}
-              mb={4}
-              direction={isMobile ? "column" : "row"}
-              bg="barber.400"
-              justifyContent="space-between"
-              align={isMobile ? "flex-start" : "center"}
+              m={0}
+              p={0}
+              mt={1}
+              bg="transparent"
+              style={{ textDecoration: "none" }}
             >
-              <Flex direction="row" mb={isMobile ? 2 : 0}>
-                <IoMdPerson size={28} color="#fba931" />
-                <Text color="white" fontWeight="bold" ml={4} noOfLines={2}>
-                  Tibirica Botto
+              <Flex
+                w="100%"
+                p={4}
+                rounded={4}
+                mb={2}
+                direction={isMobile ? "column" : "row"}
+                bg="barber.400"
+                justifyContent="space-between"
+                align={isMobile ? "flex-start" : "center"}
+              >
+                <Flex direction="row" mb={isMobile ? 2 : 0}>
+                  <IoMdPerson size={28} color="#fba931" />
+                  <Text color="white" fontWeight="bold" ml={4} noOfLines={2}>
+                    {item?.customer}
+                  </Text>
+                </Flex>
+                <Text color="white" fontWeight="bold" mb={isMobile ? 2 : 0}>
+                  {item?.haircut?.name}
+                </Text>
+                <Text color="white" fontWeight="bold" mb={isMobile ? 2 : 0}>
+                  ${item?.haircut?.price}
                 </Text>
               </Flex>
-              <Text color="white" fontWeight="bold" mb={isMobile ? 2 : 0}>
-                Spider hurt
-              </Text>
-              <Text color="white" fontWeight="bold" mb={isMobile ? 2 : 0}>
-                $49.99
-              </Text>
-            </Flex>
-          </ChakraLink>
+            </ChakraLink>
+          ))}
         </Flex>
       </SideBar>
     </>
   );
 }
 
-export const getServerSideProps = canSSRAuth(async () => {
-  return {
-    props: {},
-  };
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  try {
+    const apiClient = setupAPIClient(ctx);
+    const response = await apiClient.get("/schedule");
+
+    return {
+      props: {
+        schedule: response.data,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        schedule: [],
+      },
+    };
+  }
 });

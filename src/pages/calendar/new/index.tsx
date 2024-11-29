@@ -28,6 +28,7 @@ export default function New({ haircuts }: NewProps) {
   }
 
   async function handleNew() {
+    if (customer === "") return;
     try {
       const apiClient = setupAPIClient();
       await apiClient.post("/schedule", {
