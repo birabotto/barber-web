@@ -110,6 +110,7 @@ export default function Haircuts({ haircuts }: HaircutsProps) {
               <Flex
                 cursor="pointer"
                 w="100%"
+                maxW="700px"
                 p={4}
                 bg="barber.400"
                 direction={isMobile ? "column" : "row"}
