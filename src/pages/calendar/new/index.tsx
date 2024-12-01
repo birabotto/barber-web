@@ -86,7 +86,11 @@ export default function New({ haircuts }: NewProps) {
               }
             >
               {haircuts?.map((haircut) => (
-                <option key={haircut.id} value={haircut?.id}>
+                <option
+                  style={{ backgroundColor: "#FFF", color: "#000" }}
+                  key={haircut.id}
+                  value={haircut?.id}
+                >
                   {haircut?.name}
                 </option>
               ))}

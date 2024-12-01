@@ -89,7 +89,15 @@ export default function Haircuts({ haircuts }: HaircutsProps) {
             </Heading>
 
             <Link href="/haircuts/new">
-              <Button>New Haircut</Button>
+              <Button
+                bg="gray.700"
+                color="white"
+                _hover={{
+                  background: "gray.700",
+                }}
+              >
+                New Haircut
+              </Button>
             </Link>
 
             <Stack ml="auto" align="center" direction="row">

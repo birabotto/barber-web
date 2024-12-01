@@ -60,7 +60,15 @@ export default function NewHaircut({ subscriptions, count }: NewHaircutProps) {
             mb={isMobile ? 4 : 0}
           >
             <Link href="/haircuts">
-              <Button bg="barber.400" color="white" display="flex" mr={4}>
+              <Button
+                bg="gray.700"
+                _hover={{
+                  background: "gray.700",
+                }}
+                color="white"
+                display="flex"
+                mr={4}
+              >
                 <FiChevronLeft size={24} color="#FFF" />
                 Back
               </Button>
