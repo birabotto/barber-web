@@ -6,6 +6,7 @@ import {
   Button,
   Link as ChakraLink,
   useMediaQuery,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { canSSRAuth } from "@/utils/canSSRAuth";
 import { SideBar } from "@/components/sidebar";
@@ -13,8 +14,11 @@ import Link from "next/link";
 import { IoMdPerson } from "react-icons/io";
 import { setupAPIClient } from "@/services/api";
 import { useState } from "react";
+import ModalInfo from "@/components/sidebar/modal";
+import { api } from "@/services/apiClient";
+import { li } from "framer-motion/client";
 
-interface ScheduleItem {
+export interface ScheduleItem {
   map(
     arg0: (item: any) => import("react").JSX.Element
   ): import("react").ReactNode;
@@ -34,8 +38,36 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ schedule }: DashboardProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [isMobile] = useMediaQuery("(max-width: 500px)");
   const [list, setList] = useState(schedule);
+  const [service, setService] = useState<ScheduleItem>();
+
+  function handleOpenModal(item: ScheduleItem) {
+    setService(item);
+    onOpen();
+  }
+
+  async function handleFinish(id: string) {
+    try {
+      const apiClient = setupAPIClient();
+      await apiClient.delete("/schedule", {
+        params: {
+          schedule_id: id,
+        },
+      });
+
+      const filterItem = list.filter((item) => {
+        return item?.id !== id;
+      });
+      setList(filterItem);
+      onClose();
+    } catch (error) {
+      console.error(error);
+      onClose();
+    }
+  }
+
   return (
     <>
       <Head>
@@ -61,6 +93,7 @@ export default function Dashboard({ schedule }: DashboardProps) {
 
           {list.map((item) => (
             <ChakraLink
+              onClick={() => handleOpenModal(item)}
               key={item?.id}
               w="100%"
               m={0}
@@ -96,6 +129,13 @@ export default function Dashboard({ schedule }: DashboardProps) {
           ))}
         </Flex>
       </SideBar>
+      <ModalInfo
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+        data={service}
+        finishService={() => handleFinish(service?.id)}
+      />
     </>
   );
 }
